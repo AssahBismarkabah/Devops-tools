@@ -1,0 +1,17 @@
+---
+applications:
+- name: static-app
+  buildpacks:
+  - staticfile_buildpack
+  stack: cflinuxfs4
+  routes:
+  - route: zip-with-src-path-accountable-eland-rb.de.a9sapp.eu
+    protocol: http1
+  processes:
+  - type: web
+    instances: 1
+    memory: 32M
+    disk_quota: 64M
+    log-rate-limit-per-second: -1
+    health-check-type: port
+    readiness-health-check-type: process
