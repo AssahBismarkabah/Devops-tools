@@ -5,3 +5,5 @@ applications:
   memory: 64M
   buildpacks:
   - go_buildpack
+  route:
+  - route: training-app-assah-bismark.de.a9sapp.eu
