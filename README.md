@@ -31,3 +31,32 @@ oc version
 ```
 
 **You may need to add the installation path in your bash profile**
+
+# **working with db using OpenStack oc CLI**
+
+![alt text](rh-openshift/image.png)
+
+```bash
+oc create -f 
+https://raw.githubusercontent.com/openshift-labs/starter-guides/ocp-4.8/mongodb-template.yaml -n {your-namespace}
+```
+```bash
+oc new-app --template=mongodb-ephemeral --param MONGODB_USER=genuser --param MONGODB_PASSWORD=password --param MONGODB_DATABASE=namegen --param NAMESPACE={your-namespace}
+```
+
+```bash
+oc import-image mongodb:3.6 
+--from=registry.access.redhat.com/rhscl/mongodb-36-rhel7 --confirm -n {your-namespace}
+```
+
+## About these parameters:
+
+**--template=mongodb-persistent**  declares the OpenShift template to use, in this case the mongodb-persistent template. The mongodb-persistent template creates a Kubernetes persistent volume claim (PVC) for storing database data. The data stored in the PVC will remain available even if the instance of the MongoDB database is removed from the Developer Sandbox for Red Hat OpenShift. 
+
+**--param=MONGODB_USER=genuser** declares the name of the MongoDB user who will be reading and writing to the instance of the MongoDB database running in the Developer Sandbox for Red Hat OpenShift. 
+**--param=MONGODB_PASSWORD=password** declares the password for the MongoDB user who will be reading and writing to the instance of the MongoDB database running in the Developer Sandbox for Red Hat OpenShift. 
+**--param=MONGODB_DATABASE=namegen** declares the name of the database in the MongoDB instance that will be created to store data for the demonstration application.
+
+
+
+
