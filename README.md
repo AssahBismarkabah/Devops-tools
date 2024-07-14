@@ -30,4 +30,4 @@ sudo mv oc kubectl /usr/local/bin/
 oc version
 ```
 
-** You may need to add the installation path in your bash profile
+**You may need to add the installation path in your bash profile**
