@@ -34,7 +34,8 @@ oc version
 
 # **working with db using OpenStack oc CLI**
 
-![alt text](rh-openshift/image.png)
+![alt text](rh-openshift/image.png)'
+
 
 ```bash
 oc create -f 
