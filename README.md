@@ -58,6 +58,24 @@ oc import-image mongodb:3.6
 **--param=MONGODB_PASSWORD=password** declares the password for the MongoDB user who will be reading and writing to the instance of the MongoDB database running in the Developer Sandbox for Red Hat OpenShift. 
 **--param=MONGODB_DATABASE=namegen** declares the name of the database in the MongoDB instance that will be created to store data for the demonstration application.
 
+## **Installing the OpenShift Pipelines Operator using the CLI**
+
+```yaml
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openshift-pipelines-operator
+  namespace: openshift-operators
+spec:
+  channel:  <channel name> 
+  name: openshift-pipelines-operator-rh 
+  source: redhat-operators 
+  sourceNamespace: openshift-marketplace 
+
+  ```
+
+
 
 
 
