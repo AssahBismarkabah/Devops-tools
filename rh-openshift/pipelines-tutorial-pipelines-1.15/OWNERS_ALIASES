@@ -1,0 +1,20 @@
+aliases:
+  pipeline-tutorial-approvers:
+  - chmouel
+  - hrishin
+  - siamaksade
+  - sthaha
+  - vdemeester
+  - piyush-garg
+  - sm43
+
+  pipeline-tutorial-reviewers:
+  - chmouel
+  - hrishin
+  - khrm
+  - nikhil-thomas
+  - piyush-garg
+  - siamaksade
+  - sm43
+  - sthaha
+  - vdemeester
