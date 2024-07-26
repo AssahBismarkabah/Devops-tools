@@ -1,0 +1,16 @@
+#cloud-config
+users:
+  - name: user1
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3...user1_key
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+
+package_update: true
+packages:
+  - vim
+  - git
+
+runcmd:
+  - echo "Hello, World!" > /etc/motd

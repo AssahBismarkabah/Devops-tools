@@ -1,0 +1,13 @@
+#cloud-config
+growpart:
+  mode: auto
+  devices: ['/']
+  ignore_growroot_disabled: false
+
+fs_setup:
+  - label: data
+    filesystem: ext4
+    device: /dev/sdb
+
+mounts:
+  - ["/dev/sdb", "/mnt/data"]
