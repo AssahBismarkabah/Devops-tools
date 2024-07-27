@@ -7,19 +7,31 @@ packer {
   }
 }
 
+// Define variables at the top level
+variable "docker_image" {
+  type    = string
+  default = "ubuntu:jammy"
+}
+
+source "docker" "ubuntu-focal" {
+  image  = "ubuntu:focal"
+  commit = true
+}
+
+
 source "docker" "ubuntu" {
-  image  = "ubuntu:jammy"
+  image  = var.docker_image
   commit = true
 }
 
 build {
   name = "learn-packer"
   sources = [
-    "source.docker.ubuntu"
+    "source.docker.ubuntu",
+    "source.docker.ubuntu-focal",
   ]
 
-  //adding provisioners
-  
+
   provisioner "shell" {
     environment_vars = [
       "FOO=hello world",
@@ -31,6 +43,19 @@ build {
   }
 
   provisioner "shell" {
-    inline = ["echo This provisioner runs last"]
+    inline = ["echo Running $(cat /etc/os-release | grep VERSION= | sed 's/\"//g' | sed 's/VERSION=//g') Docker image."]
   }
+  
+  post-processor "docker-tag" {
+  repository = "learn-packer"
+  tags       = ["ubuntu-jammy", "packer-rocks"]
+  only       = ["docker.ubuntu"]
+}
+
+post-processor "docker-tag" {
+  repository = "learn-packer"
+  tags       = ["ubuntu-focal", "packer-rocks"]
+  only       = ["docker.ubuntu-focal"]
+}
+
 }
