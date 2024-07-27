@@ -12,25 +12,38 @@
       service:
         name: nginx
         state: started
+
+    - name: Check if Nginx is installed
+      shell: dpkg -l nginx
+      register: nginx_installed
+
+    - name: Print Nginx installation status
+      debug:
+        msg: "Nginx is installed"
+      when: nginx_installed.rc == 0
+
     - name: Install Git
       apt:
         name: git
         state: present
 
+    - name: Install multiple packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - curl
+        - vim
+
     - name: Copy Nginx Configuration Files
       copy:
-       src: nginx.conf
-       dest: /etc/nginx/nginx.conf
-       
-       #handler for nginx
-
+        src:  nginx.conf
+        dest: /etc/nginx/nginx.conf
       notify: Restart Nginx
 
   handlers:
-  - name: Restart Nginx
-    service:
-      name: nginx
-      state: restarted
-
-
-
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
