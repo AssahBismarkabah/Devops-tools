@@ -119,4 +119,27 @@ sudo mv chefadmin.pem ~/.chef/
 sudo chown $USER:$USER ~/.chef/chefadmin.pem
 chmod 600 ~/.chef/chefadmin.pem
 ```
+- Configure Your User Credentials File
+Your .chef directory contains a credentials file used to communicate with the Chef Infra Server. You can generate this file by running knife configure and following the prompts.
+
+The knife configure command requires the following values:
+
+- Chef Server URL: the full URL to your Chef Infra Server including the org
+- Client Name: the client name your server administrator created for you
+Your Chef administrator should provide this information. For Hosted Chef or Chef Manage, you can find this information in the Starter Kit file. Download the file on the Manage site by navigating to the Administration tab and selecting Starter Kit. (Manage > Administration > Starter Kit > Download Starter Kit)
+
+Find the .chef/config.rb file in the Starter Kit. It should look like:
+**If you're running the Chef server on the same machine as your workstation, you can use https://localhost**
+```bash
+current_dir = File.dirname(__FILE__)
+log_level                :info
+log_location             STDOUT
+node_name                'bismark'
+client_key               "#{current_dir}/chefadmin.pem"
+validation_client_name   'myorg-validator'
+validation_key           "#{current_dir}/myorg-validator.pem"
+chef_server_url          'https://localhost/organizations/myorg'
+cookbook_path            ["#{current_dir}/../cookbooks"]
+
+```
 
