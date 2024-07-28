@@ -85,6 +85,38 @@ spec:
 
 ![alt text](rh-openshift/pipelines-tutorial-pipelines-1.15/docs/images/image.png)
 
+### Setting Up Chef
 
+- Install Chef Server and Client On the Chef Server node:
 
+- Download and install Chef Server:
+
+```bash
+wget https://packages.chef.io/files/stable/chef-server/14.2.2/ubuntu/20.04/chef-server-core_14.2.2-1_amd64.deb
+sudo dpkg -i chef-server-core_14.2.2-1_amd64.deb
+```
+- Start and configure Chef Server:
+
+```bash
+sudo chef-server-ctl reconfigure
+```
+
+- Create a user and organization:
+
+```bash
+sudo chef-server-ctl user-create USER_NAME FIRST_NAME LAST_NAME EMAIL 'PASSWORD' --filename /path/to/USER_NAME.pem
+sudo chef-server-ctl org-create ORG_NAME 'ORG_FULL_NAME' --association_user USER_NAME --filename /path/to/ORG_NAME-validator.pem
+```
+- Some Times the .chef file created is owned by the user account not the root user, To resolve that we need to change the permission of the directory
+
+```bash
+mkdir -p ~/.chef
+sudo chown $USER:$USER ~/.chef
+chmod 700 ~/.chef
+```
+```bash
+sudo mv chefadmin.pem ~/.chef/
+sudo chown $USER:$USER ~/.chef/chefadmin.pem
+chmod 600 ~/.chef/chefadmin.pem
+```
 
