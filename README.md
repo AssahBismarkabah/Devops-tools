@@ -258,5 +258,109 @@ Start the Puppet Server service: **sudo systemctl start puppetserver**
 - Open a new shell, or use exec bash to update your PATH.
 Tip: If you're installing Puppet Server on Ubuntu, use bash -l instead of exec bash.
 To check if you installed the Puppet Server correctly, run: puppetserver -v
+Here’s a combined example of what your puppet.conf file might look like for both the server and agent:
 
+```yaml
+[main]
+certname = puppetserver.local
+server = puppetserver.local
+environment = production
+runinterval = 1h
+basemodulepath = /etc/puppetlabs/code/modules:/opt/puppetlabs/puppet/modules
 
+[master]
+dns_alt_names = puppet,puppetserver.local
+
+[agent]
+certname = agent.local
+server = puppetserver.local
+environment = production
+runinterval = 1h
+```
+
+- Understanding Puppet Commands
+Facter Command
+Show all facters:
+```bash
+facter
+```
+This command displays key-value pairs with information about the node, such as OS, network interfaces, and IP addresses.
+- Puppet Agent Command
+- Enable puppet agent to run on node:
+
+```bash
+sudo puppet agent --enable
+```
+This command enables the Puppet agent on the node, allowing it to run and apply configurations.
+- Puppet Resource Command
+- Show all installed packages:
+
+```bash
+sudo puppet resource package
+```
+- This command lists all installed packages on the node.
+
+- Show all managed resources:
+
+```bash
+sudo puppet resource
+```
+This command lists all resources managed by Puppet on the node.
+
+- Puppet Module Command
+List all installed modules:
+```bash
+sudo puppet module list
+```
+This command lists all Puppet modules installed on the node.
+Puppet Config Command
+Print all configuration settings:
+```bash
+sudo puppet config print all
+```
+This command prints all configuration settings of Puppet.
+3. Creating a Manifest
+
+Create a manifest file site.pp on the Puppet Master node in the /etc/puppetlabs/code/environments/production/manifests/ directory.
+
+```puppet
+node default {
+  class { 'apache':
+    mpm_module => 'prefork',
+  }
+}
+
+class apache {
+  package { 'httpd':
+    ensure => installed,
+  }
+
+  service { 'httpd':
+    ensure => running,
+    enable => true,
+  }
+
+  file { '/var/www/html/index.html':
+    ensure  => file,
+    content => 'Hello, Puppet!',
+  }
+}
+```
+- Applying the Manifest
+- On the Puppet Agent node:
+
+Run the Puppet Agent to apply the manifest:
+```bash
+sudo puppet agent --test
+```
+5. Verify Configuration
+Check if Apache is installed and running:
+
+```bash
+sudo systemctl status httpd
+```
+Verify the contents of /var/www/html/index.html:
+
+```bash
+cat /var/www/html/index.html
+```
