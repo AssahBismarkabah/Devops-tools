@@ -241,3 +241,22 @@ Recipe: starter::default
 Running handlers:
 Running handlers complete
 ```
+### Enable the Puppet platform repository
+
+- Apt is used with Debian and Ubuntu. Go to apt.puppet.com for a list of packages and corresponding URLs. The Apt package URL naming convention is generally:
+```bash
+://apt.puppet.com/<PLATFORM_VERSION>-release-<VERSION_CODE_NAME>.deb
+Copied!For example: https://apt.puppet.com/puppet8-release-focal.deb. Note that for Ubuntu releases, the VERSION_CODE_NAME is the adjective, not the animal.
+```
+- Install Puppet Server
+install the Puppet Server package by running one of the following commands:
+
+-Red Hat operating systems: yum install puppetserver
+Debian and Ubuntu operating systems: **apt-get install puppetserver**
+Start the Puppet Server service: **sudo systemctl start puppetserver**
+
+- Open a new shell, or use exec bash to update your PATH.
+Tip: If you're installing Puppet Server on Ubuntu, use bash -l instead of exec bash.
+To check if you installed the Puppet Server correctly, run: puppetserver -v
+
+
