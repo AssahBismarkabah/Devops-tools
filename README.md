@@ -140,6 +140,36 @@ validation_client_name   'myorg-validator'
 validation_key           "#{current_dir}/myorg-validator.pem"
 chef_server_url          'https://localhost/organizations/myorg'
 cookbook_path            ["#{current_dir}/../cookbooks"]
-
 ```
+- On the Chef Client node:
 
+```bash
+wget https://packages.chef.io/files/stable/chef/17.10.0/ubuntu/20.04/chef_17.10.0-1_amd64.deb
+sudo dpkg -i chef_17.10.0-1_amd64.deb
+```
+- Create a client configuration file:
+Create a file named client.rb in the /etc/chef/ directory:
+```bash
+sudo mkdir -p /etc/chef
+sudo nano /etc/chef/client.rb
+```
+- Add the following content to the file:
+```ruby
+chef_server_url 'https://localhost/organizations/myorg'
+validation_client_name 'myorg-validator'
+validation_key '/home/bismark/.chef/myorg-validator.pem'
+node_name 'adorsys'  // or whatever name you want for this node
+#you may run into a problem of the Chef client is unable to connect to the Chef server due to an SSL certificate verification failure. This is likely because your Chef server is using a self-signed certificate, which is not trusted by default. To resolve this issue, you need to either add the self-signed certificate to the trusted certificates or disable SSL verification
+#ssl_verify_mode :verify_none 
+```
+- Copy the validator key:
+```bash
+sudo cp /home/bismark/.chef/myorg-validator.pem /etc/chef/
+```
+- Set proper permissions:
+- Ensure that the Chef client can read these files:
+```bash
+sudo chown root:root /etc/chef/client.rb /etc/chef/myorg-validator.pem
+sudo chmod 644 /etc/chef/client.rb
+sudo chmod 600 /etc/chef/myorg-validator.pem
+```
