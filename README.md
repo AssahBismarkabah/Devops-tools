@@ -173,3 +173,71 @@ sudo chown root:root /etc/chef/client.rb /etc/chef/myorg-validator.pem
 sudo chmod 644 /etc/chef/client.rb
 sudo chmod 600 /etc/chef/myorg-validator.pem
 ```
+- Install Chef Workstation:
+Chef Workstation includes the chef command and other tools necessary for cookbook development. Here's how to install it:
+bash
+- Download Chef Workstation
+```bash
+ https://packages.chef.io/files/stable/chef-workstation/21.10.640/ubuntu/20.04/chef-workstation_21.10.640-1_amd64.deb
+```
+- Install the package
+```bash
+ dpkg -i chef-workstation_21.10.640-1_amd64.deb
+```
+- If there are any dependency issues, run:
+```bash
+ apt-get install -f
+```
+Note: The version number (21.10.640) might change. Check the Chef Workstation downloads page for the latest version.
+Verify the installation:
+- After installation, verify that the chef command is available:
+```bash
+chef --version
+```
+- Generate the cookbook:
+```bash
+chef generate cookbook starter
+```
+- Configure knife:
+If you haven't already, you'll need to configure knife to communicate with your Chef server. Create or edit ~/.chef/knife.rb:
+```ruby
+current_dir = File.dirname(__FILE__)
+log_level                :info
+log_location             STDOUT
+node_name                "your_username"
+client_key               "#{current_dir}/your_username.pem"
+chef_server_url          "https://your_chef_server_url/organizations/your_org"
+cookbook_path            ["#{current_dir}/../cookbooks"]
+```
+Replace the placeholders with your actual information.
+- Upload the cookbook:
+After generating the cookbook, you can upload it to the Chef server:
+```bash
+knife cookbook upload starter
+```
+Run chef-client:
+Now you should be able to run chef-client with the starter cookbook:
+```bash
+sudo chef-client --runlist 'recipe[starter]'
+```
+```ruby
+Synchronizing cookbooks:
+  - starter (0.1.0)
+Installing cookbook gem dependencies:
+Compiling cookbooks...
+Loading Chef InSpec profile files:
+Loading Chef InSpec input files:
+Loading Chef InSpec waiver files:
+Converging 1 resources
+Recipe: starter::default
+  * file[/tmp/hello.txt] action create
+    - create new file /tmp/hello.txt
+    - update content in file /tmp/hello.txt from none to 315f5b
+    --- /tmp/hello.txt  2024-07-28 03:44:46.332189686 +0100
+    +++ /tmp/.chef-hello20240728-105433-ma7h6t.txt      2024-07-28 03:44:46.332189686 +0100
+    @@ -1 +1,2 @@
+    +Hello, world!
+
+Running handlers:
+Running handlers complete
+```
