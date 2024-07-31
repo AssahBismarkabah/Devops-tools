@@ -15,6 +15,7 @@
 
     - name: Check if Nginx is installed
       shell: dpkg -l nginx
+      #stores the return code of the task in the variable nginx_installed
       register: nginx_installed
 
     - name: Print Nginx installation status
