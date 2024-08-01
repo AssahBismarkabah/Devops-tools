@@ -32,6 +32,7 @@
       apt:
         name: "{{ item }}"
         state: present
+        
       loop:
         - git
         - curl
