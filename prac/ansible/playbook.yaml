@@ -29,10 +29,11 @@
         state: present
 
     - name: Install multiple packages
+
       apt:
         name: "{{ item }}"
         state: present
-        
+
       loop:
         - git
         - curl
@@ -42,6 +43,7 @@
       copy:
         src:  nginx.conf
         dest: /etc/nginx/nginx.conf
+        owner: bismark
       notify: Restart Nginx
 
   handlers:
