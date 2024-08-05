@@ -1,0 +1,47 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Pull WordPress image
+      docker_image:
+        name: wordpress
+        source: pull
+
+    - name: Pull MySQL image
+      docker_image:
+        name: mysql
+        source: pull
+
+    - name: Run MySQL container
+      docker_container:
+        name: mysql
+        image: mysql
+        state: started
+        restart_policy: always
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wordpressuser
+          MYSQL_PASSWORD: wordpresspassword
+
+    - name: Run WordPress container
+      docker_container:
+        name: wordpress
+        image: wordpress
+        state: started
+        restart_policy: always
+        links:
+          - mysql
+        ports:
+          - "80:80"
+        env:
+          WORDPRESS_DB_HOST: mysql
+          WORDPRESS_DB_USER: wordpressuser
+          WORDPRESS_DB_PASSWORD: wordpresspassword
+          WORDPRESS_DB_NAME: wordpress

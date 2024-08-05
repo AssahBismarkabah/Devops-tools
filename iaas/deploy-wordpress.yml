@@ -1,0 +1,87 @@
+---
+- name: Provision and configure EC2 instance for WordPress
+  hosts: localhost
+  gather_facts: false
+  vars:
+    key_name: your-key-pair
+    region: us-east-1
+    ami: ami-0c55b159cbfafe1f0  # Replace with the AMI ID from Packer
+    instance_type: t2.micro
+    security_group: sg-xxxxxxxx  # Replace with your security group ID
+  tasks:
+    - name: Launch EC2 instance
+      ec2:
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image: "{{ ami }}"
+        wait: yes
+        region: "{{ region }}"
+        group: "{{ security_group }}"
+        instance_tags:
+          Name: WordPressInstance
+      register: ec2
+
+    - name: Add instance to inventory
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups: launched
+      with_items: "{{ ec2.instances }}"
+      when: ec2 is changed
+
+    - name: Wait for SSH to come up
+      wait_for:
+        host: "{{ item.public_ip }}"
+        port: 22
+        delay: 60
+        timeout: 320
+        state: started
+      with_items: "{{ ec2.instances }}"
+      when: ec2 is changed
+
+    - name: Ensure docker is running and containers are up
+      hosts: launched
+      become: true
+      tasks:
+        - name: Start Docker service
+          service:
+            name: docker
+            state: started
+            enabled: true
+
+        - name: Pull WordPress image
+          docker_image:
+            name: wordpress
+            source: pull
+
+        - name: Pull MySQL image
+          docker_image:
+            name: mysql
+            source: pull
+
+        - name: Run MySQL container
+          docker_container:
+            name: mysql
+            image: mysql
+            state: started
+            restart_policy: always
+            env:
+              MYSQL_ROOT_PASSWORD: rootpassword
+              MYSQL_DATABASE: wordpress
+              MYSQL_USER: wordpressuser
+              MYSQL_PASSWORD: wordpresspassword
+
+        - name: Run WordPress container
+          docker_container:
+            name: wordpress
+            image: wordpress
+            state: started
+            restart_policy: always
+            links:
+              - mysql
+            ports:
+              - "80:80"
+            env:
+              WORDPRESS_DB_HOST: mysql
+              WORDPRESS_DB_USER: wordpressuser
+              WORDPRESS_DB_PASSWORD: wordpresspassword
+              WORDPRESS_DB_NAME: wordpress
