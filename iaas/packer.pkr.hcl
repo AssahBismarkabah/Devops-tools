@@ -1,3 +1,16 @@
+packer {
+  required_plugins {
+    amazon = {
+      source  = "github.com/hashicorp/amazon"
+      version = "~> 1"
+    }
+    ansible = {
+      version = "~> 1"
+      source  = "github.com/hashicorp/ansible"
+    }
+  }
+}
+
 variable "aws_access_key" {
   type    = string
   default = ""
@@ -20,7 +33,7 @@ variable "instance_type" {
 
 variable "ami_name" {
   type    = string
-  default = "wordpress-ami-${timestamp()}"
+  default = "wordpress-ami-1"  # Use a static name or a unique identifier
 }
 
 source "amazon-ebs" "ubuntu" {
@@ -44,6 +57,6 @@ build {
   }
 
   provisioner "ansible" {
-    playbook_file = "iaas/wordpress-playbook.yml"
+    playbook_file = "ansible/wordpress-playbook.yml"
   }
 }

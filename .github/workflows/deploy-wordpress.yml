@@ -1,0 +1,58 @@
+name: Deploy WordPress
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-2
+      PACKER_VAR_files: |
+        {
+          "aws_access_key": "${{ secrets.AWS_ACCESS_KEY_ID }}",
+          "aws_secret_key": "${{ secrets.AWS_SECRET_ACCESS_KEY }}",
+          "region": "us-east-2",
+          "instance_type": "t2.micro",
+          "ami_name": "wordpress-ami-${{ github.sha }}"
+        }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v1
+
+      - name: Set up Ansible
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          version: '2.10.7'
+          playbook: ''
+
+      - name: Build AMI with Packer
+        run: |
+          echo "${PACKER_VAR_files}" > variables.json
+          packer build -var-file=variables.json iaas/packer.pkr.hcl
+
+      - name: Extract AMI ID
+        id: ami
+        run: |
+          AMI_ID=$(packer build -machine-readable packer.pkr.hcl | awk -F, '$3 ~ /artifact,0,id/ {print $6}' | cut -d ':' -f2)
+          echo "::set-output name=ami_id::$AMI_ID"
+        env:
+          PACKER_LOG: "1"
+          PACKER_VAR_files: "${{ env.PACKER_VAR_files }}"
+
+      - name: Provision EC2 and Configure WordPress with Ansible
+        run: ansible-playbook ansible/deploy-wordpress.yml -e ami_id=${{ steps.ami.outputs.ami_id }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          KEY_NAME: your-key-pair
+          SECURITY_GROUP: sg-xxxxxxxx  # Replace with your security group ID
+          ANSIBLE_HOST_KEY_CHECKING: 'false'
