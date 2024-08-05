@@ -2,7 +2,6 @@
 - hosts: all
   become: true
   tasks:
-
     - name: Install Docker collection
       ansible.builtin.command:
         cmd: ansible-galaxy collection install community.docker
@@ -31,17 +30,17 @@
         enabled: true
 
     - name: Pull WordPress image
-      docker_image:
+      community.docker.docker_image:
         name: wordpress
         source: pull
 
     - name: Pull MySQL image
-      docker_image:
+      community.docker.docker_image:
         name: mysql
         source: pull
 
     - name: Run MySQL container
-      docker_container:
+      community.docker.docker_container:
         name: mysql
         image: mysql
         state: started
@@ -53,7 +52,7 @@
           MYSQL_PASSWORD: wordpresspassword
 
     - name: Run WordPress container
-      docker_container:
+      community.docker.docker_container:
         name: wordpress
         image: wordpress
         state: started
