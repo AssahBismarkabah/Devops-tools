@@ -49,6 +49,8 @@ source "amazon-ebs" "ubuntu" {
 build {
   sources = ["source.amazon-ebs.ubuntu"]
 
+
+
   provisioner "shell" {
     inline = [
       "sudo apt-get update",
@@ -63,6 +65,10 @@ build {
     inline = [
       "ansible-galaxy collection install community.docker"
     ]
+  }
+
+  provisioner "ansible" {
+    playbook_file = "ansible/wordpress-playbook.yml"
   }
 
   provisioner "ansible" {
