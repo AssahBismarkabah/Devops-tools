@@ -53,7 +53,11 @@ build {
 
   provisioner "shell" {
     inline = [
+      "sudo add-apt-repository universe",
       "sudo apt-get update",
+      "sudo apt-get upgrade -y",
+      "sudo apt-get install -y python3-distutils-extra python3-setuptools",
+      "sudo apt-get install -y build-essential python3-dev python3-wheel",
       "sudo apt-get install -y python3 python3-pip",
       "sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1",
       "sudo apt-get install -y docker.io",
@@ -72,6 +76,6 @@ build {
   }
 
   provisioner "ansible" {
-    playbook_file = "ansible/wordpress-playbook.yml"
+    playbook_file = "ansible/requirements.yml"
   }
 }

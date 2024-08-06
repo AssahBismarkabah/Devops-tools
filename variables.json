@@ -1,7 +1,0 @@
-{
-  "aws_access_key": "AKIA2I65RUWI53AWL6L6",
-  "aws_secret_key": "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",
-  "region": "us-east-2",
-  "instance_type": "t2.micro",
-  "ami_name": "wordpress-ami-1"
-}
