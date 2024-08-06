@@ -364,3 +364,11 @@ Verify the contents of /var/www/html/index.html:
 ```bash
 cat /var/www/html/index.html
 ```
+
+## Iaac Wordpress deployment Architecture
+
+# Infrastructure as Code (IaC) Architecture
+
+This diagram represents the deployment architecture, showing the EC2 instance running Docker with WordPress and MySQL containers inside an AWS VPC.
+
+![IaC Architecture](https://www.plantuml.com/plantuml/png/TP91Rzim38Nl-XLlkJU77Nkgbnf3WNJmwc4zopQJ29MfGA8oT4F_-qmuWXCWFIG6dZxnaKzyI6AZvD6RBmFj71DUwislwiVtROr8lLZUUp9c4LVLQxl2FmDSQB-RpQnTgKtklElHvev9olaLKM--uecJMEvf1PkWGk4koSVGlr5SZgxBl8OuD95ImYQmMCSKLxV9v_Vsv_OMzM6Mh_xhxyCO3aAGS4JOQM-Jt5ZjH4lit3v7Aoxm_QJVuP4qlm4d6vtjF2NiGiGK5_f80x4uwzDQKLIZ_HiOzRSMNNP-e0W9YbaXM4Rr_3I3xO6ydvG15ISt5SKnXfDBBZ35sU0SZJ8b1tM1GRc3njltBeGtvHS8BKa-tiy-kWNdKhDpaxs_OBNy79uRxPxESxnaHb_2JFZZv03Yauk1Hs8fKIZ-MJlwuasPoV5UdMwbkxMP-mCkDmOvwGKvqFbLxZHCMTAhEUL89I6N43EhntgP-UQ8oqXhGvEgMs3C0_6GH_yV)
