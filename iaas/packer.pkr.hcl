@@ -52,7 +52,16 @@ build {
   provisioner "shell" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get install -y docker.io"
+      "sudo apt-get install -y python3 python3-pip",
+      "sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1",
+      "sudo apt-get install -y docker.io",
+      "pip3 install ansible"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [
+      "ansible-galaxy collection install community.docker"
     ]
   }
 
